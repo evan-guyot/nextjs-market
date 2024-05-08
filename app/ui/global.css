@@ -16,3 +16,11 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.bg-hover {
+  transition: background-color 0.3s ease;
+}
+
+.bg-hover:hover {
+  filter: brightness(90%);
+}
