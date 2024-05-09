@@ -48,19 +48,21 @@ export default function Page() {
     <main className="flex flex-col p-2">
       <div className="mt-4 flex grow flex-col">
         <div className="flex flex-col justify-center gap-6 w-full my-12">
-          <p className="text-xl text-gray-800 md:text-3xl font-bold mx-auto">
+          <p className="text-xl text-gray-800 dark:text-gray-200 md:text-3xl font-bold mx-auto">
             Welcome to our Market 😁
           </p>
-          <p className="text-sm text-gray-800 md:text-base mx-auto">
+          <p className="text-sm text-gray-800 dark:text-gray-200 md:text-base mx-auto">
             The place where you will find everything you need !
           </p>
         </div>
-        <div className="bg-slate-50 rounded-md w-11/12 mx-auto my-12">
+        <div className="bg-slate-50 dark:bg-slate-800 rounded-md w-11/12 mx-auto my-12">
           <Marquee autoFill={true}>
             {products.map((p) => (
               <div key={p.alt}>
                 <div className="flex flex-col items-center gap-2 p-4 md:p-8">
-                  <h2 className="text-lg font-bold mt-4">{p.name}</h2>
+                  <h2 className="text-lg font-bold mt-4 text-gray-800 dark:text-gray-200">
+                    {p.name}
+                  </h2>
                   <Link
                     href={p.link}
                     className="text-4xl p-4 rounded-md bg-hover"
@@ -71,7 +73,9 @@ export default function Page() {
                   >
                     {p.emoji}
                   </Link>
-                  <p className="text-gray-600 text-sm">{p.description}</p>
+                  <p className="text-gray-700 dark:text-gray-300 text-sm ">
+                    {p.description}
+                  </p>
                 </div>
               </div>
             ))}

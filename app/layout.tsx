@@ -19,7 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased min-h-screen`}>
+      <body
+        className={`${inter.className} antialiased min-h-screen bg-white dark:bg-black`}
+      >
         <header className="p-4">
           <nav className="bg-white rounded-lg shadow dark:bg-gray-900 w-full max-w-screen-xl mx-auto p-4 py-8">
             <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
@@ -27,7 +29,9 @@ export default function RootLayout({
                 href="/"
                 className="flex items-center gap-5 self-start  px-4 py-2 text-2xl font-semibold"
               >
-                <span>Market 🛒</span>
+                <span className="text-gray-800 dark:text-gray-200">
+                  Market 🛒
+                </span>
               </Link>
               <div className="flex items-center lg:order-2">
                 <Link
@@ -48,7 +52,9 @@ export default function RootLayout({
                 href="/"
                 className="flex items-center gap-5 self-start px-4 py-2 text-2xl font-semibold"
               >
-                <span>Market 🛒</span>
+                <span className="text-gray-800 dark:text-gray-200">
+                  Market 🛒
+                </span>
               </Link>
               <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 dark:text-gray-400">
                 <li>
