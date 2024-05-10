@@ -27,7 +27,7 @@ export default async function Page() {
                   {c.name}
                 </h2>
                 <Link
-                  href={c.slug}
+                  href={`/store/${c.slug}`}
                   className="text-4xl p-4 rounded-md bg-hover"
                   style={{
                     textShadow: "#000 2px 2px 5px",
