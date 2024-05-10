@@ -3,6 +3,8 @@ import { inter } from "@/app/ui/fonts";
 import { Metadata } from "next";
 import Link from "next/link";
 import ShareButton from "./ui/shareButton";
+import { auth, signOut } from "@/auth";
+import { UserMenuButton } from "@/app/ui/user-session";
 
 export const metadata: Metadata = {
   title: {
@@ -12,11 +14,41 @@ export const metadata: Metadata = {
   description: "A fictive market made in Next.js.",
 };
 
-export default function RootLayout({
+function SignIn() {
+  return (
+    <Link
+      href="/login"
+      className="flex items-center gap-5 self-start rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-600 md:text-base"
+    >
+      <span>Log in</span>
+    </Link>
+  );
+}
+
+function SignOut() {
+  return (
+    <UserMenuButton>
+      <form
+        action={async () => {
+          "use server";
+          await signOut();
+        }}
+      >
+        <button className="w-full block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-left">
+          Log out
+        </button>
+      </form>
+    </UserMenuButton>
+  );
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  let session = await auth();
+
   return (
     <html lang="en">
       <body
@@ -34,12 +66,7 @@ export default function RootLayout({
                 </span>
               </Link>
               <div className="flex items-center lg:order-2">
-                <Link
-                  href="/login"
-                  className="flex items-center gap-5 self-start rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-600 md:text-base"
-                >
-                  <span>Log in</span>
-                </Link>
+                <div>{session?.user ? <SignOut /> : <SignIn />}</div>
               </div>
             </div>
           </nav>
