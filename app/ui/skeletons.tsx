@@ -22,12 +22,12 @@ export function ProductsTableSkeleton() {
 function ProductsRowSkeleton() {
   return (
     <div className="w-80 flex flex-col space-y-4 bg-gray-50 rounded card-shadow gap-4 p-4 dark:bg-gray-800">
-      <div className="w-full h-48 rounded-lg bg-gray-200 animate-pulse"></div>
+      <div className="w-full h-48 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
       <div className="p-5 space-y-2">
-        <div className="w-full h-8 rounded bg-gray-200 animate-pulse"></div>
-        <div className="w-full h-6 rounded bg-gray-200 animate-pulse"></div>
-        <div className="w-full h-12 rounded bg-gray-200 animate-pulse"></div>
-        <div className="w-1/2 mx-auto h-10 rounded-lg bg-gray-200 animate-pulse"></div>
+        <div className="w-full h-8 rounded bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+        <div className="w-full h-6 rounded bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+        <div className="w-full h-12 rounded bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+        <div className="w-1/2 mx-auto h-10 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
       </div>
     </div>
   );

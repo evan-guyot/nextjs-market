@@ -52,7 +52,7 @@ export default async function ProductsTable({
           </div>
         ) : (
           <div className="mx-auto">
-            <p className="italic">
+            <p className="text-gray-900 dark:text-white italic">
               Sorry.. We could not find what you are looking for.. 😅
             </p>
           </div>

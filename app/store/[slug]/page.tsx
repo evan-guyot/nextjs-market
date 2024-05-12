@@ -25,10 +25,10 @@ export default async function StorePage({
 
   return category ? (
     <main className="flex flex-col items-center justify-center">
-      <h1 className="text-xl text-gray-800 md:text-3xl font-bold mx-auto">
+      <h1 className="text-xl text-gray-800 dark:text-gray-200 md:text-3xl font-bold mx-auto">
         {category.name} {category.emoji}
       </h1>
-      <div className="mt-4 flex items-center justify-between md:mt-8 w-1/4">
+      <div className="mt-4 flex items-center justify-between md:mt-8 xl:w-1/4 md:w-2/5 w-4/6">
         <Search placeholder="Search a product..." />
       </div>
       <Suspense key={query + currentPage} fallback={<ProductsTableSkeleton />}>
