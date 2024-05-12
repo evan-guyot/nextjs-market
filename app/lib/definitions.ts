@@ -20,3 +20,21 @@ export type CategoriesTable = {
   emoji: string;
   color: string;
 };
+
+export type Product = {
+  id: string;
+  category_id: string;
+  name: string;
+  price: number;
+  image_url: string;
+  description: string;
+};
+
+export type ProductsTable = {
+  id: string;
+  category_id: string;
+  name: string;
+  price: number;
+  image_url: string;
+  description: string;
+};
