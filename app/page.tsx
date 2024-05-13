@@ -3,7 +3,15 @@ import Marquee from "react-fast-marquee";
 import { fetchCategories } from "@/app/lib/data";
 
 export default async function Page() {
-  const categories = await fetchCategories();
+  const pages = await fetchCategories();
+
+  pages.unshift({
+    id: "",
+    name: "All categories",
+    slug: "",
+    emoji: "🛒",
+    color: "rbg( 16 16 16)",
+  });
 
   return (
     <main className="flex flex-col p-2">
@@ -18,23 +26,23 @@ export default async function Page() {
         </div>
         <div className="bg-slate-50 dark:bg-slate-800 rounded-md w-11/12 mx-auto my-12">
           <Marquee autoFill={true}>
-            {categories?.map((c) => (
+            {pages?.map((p) => (
               <div
-                key={c.id}
+                key={p.id}
                 className="flex flex-col items-center mx-8 gap-2 p-4 md:p-8"
               >
                 <h2 className="text-lg font-bold mt-4 text-gray-800 dark:text-gray-200">
-                  {c.name}
+                  {p.name}
                 </h2>
                 <Link
-                  href={`/store/${c.slug}`}
+                  href={`/store/${p.slug}`}
                   className="text-4xl p-4 rounded-md bg-hover"
                   style={{
                     textShadow: "#000 2px 2px 5px",
-                    backgroundColor: c.color,
+                    backgroundColor: p.color,
                   }}
                 >
-                  {c.emoji}
+                  {p.emoji}
                 </Link>
               </div>
             ))}
