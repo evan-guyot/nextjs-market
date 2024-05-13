@@ -4,15 +4,19 @@ import Image from "next/image";
 import { Button } from "../button";
 
 export default async function ProductsTable({
-  category,
   query,
   currentPage,
+  category,
 }: {
-  category: CategoriesTable;
+  category?: CategoriesTable;
   query: string;
   currentPage: number;
 }) {
-  const products = await fetchFilteredProducts(category, query, currentPage);
+  const products = await fetchFilteredProducts(
+    query,
+    currentPage,
+    category?.id,
+  );
 
   return (
     <div className="mt-6 flow-root">

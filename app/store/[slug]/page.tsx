@@ -6,7 +6,7 @@ import Table from "@/app/ui/store/table";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-export default async function StorePage({
+export default async function StoreSlugPage({
   params,
   searchParams,
 }: {
@@ -21,7 +21,7 @@ export default async function StorePage({
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = category && (await fetchProductsPages(category, query));
+  const totalPages = category && (await fetchProductsPages(query, category.id));
 
   return category ? (
     <main className="flex flex-col items-center justify-center">

@@ -42,10 +42,12 @@ export async function getCategoryBySlug(slug: string) {
 }
 
 const ITEMS_PER_PAGE = 16;
+const FAKE_UUID = "00000000-0000-0000-0000-000000000000";
+
 export async function fetchFilteredProducts(
-  category: CategoriesTable,
   query: string,
-  currentPage: number
+  currentPage: number,
+  categoryId: string | undefined = FAKE_UUID,
 ) {
   noStore();
 
@@ -60,12 +62,13 @@ export async function fetchFilteredProducts(
         products.price,
         products.image_url,
         products.description
-      FROM products
-      WHERE
-        (products.name ILIKE ${`%${query}%`} OR products.description ILIKE ${`%${query}%`}) AND
-        products.category_id = ${category.id}
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-    `;
+        FROM products
+          JOIN categories ON products.category_id = categories.id 
+        WHERE 
+            (products.name ILIKE ${`%${query}%`} OR products.description ILIKE ${`%${query}%`}) AND 
+            (${FAKE_UUID} = ${categoryId} OR categories.id = ${categoryId})
+        LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+      `;
 
     return products.rows;
   } catch (error) {
@@ -75,19 +78,19 @@ export async function fetchFilteredProducts(
 }
 
 export async function fetchProductsPages(
-  category: CategoriesTable,
-  query: string
+  query: string,
+  categoryId: string | undefined = FAKE_UUID,
 ) {
   noStore();
 
   try {
     const count = await sql`SELECT COUNT(*)
-  FROM products
-  JOIN categories ON products.category_id = categories.id
-  WHERE
-    (products.name ILIKE ${`%${query}%`} OR products.description ILIKE ${`%${query}%`}) AND
-    categories.id = ${category.id}   
-`;
+    FROM products
+    JOIN categories ON products.category_id = categories.id
+    WHERE
+      (products.name ILIKE ${`%${query}%`} OR products.description ILIKE ${`%${query}%`}) AND
+      (${FAKE_UUID} = ${categoryId} OR categories.id = ${categoryId})
+  `;
 
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
     return totalPages;
