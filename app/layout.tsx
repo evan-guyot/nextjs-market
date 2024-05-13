@@ -109,7 +109,12 @@ export default async function RootLayout({
                 <ul className="text-gray-500 dark:text-gray-400 font-medium">
                   {pages.map((p) => (
                     <li className="mb-4" key={p.id}>
-                      <Link href={`/store/${p.slug}`}>{p.name}</Link>
+                      <Link
+                        href={`/store/${p.slug}`}
+                        className="underline-offset-8 hover:underline"
+                      >
+                        {p.name}
+                      </Link>
                     </li>
                   ))}
                 </ul>
