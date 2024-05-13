@@ -5,6 +5,7 @@ import Link from "next/link";
 import ShareButton from "./ui/shareButton";
 import { auth, signOut } from "@/auth";
 import { UserMenuButton } from "@/app/ui/user-session";
+import { fetchCategories } from "@/app/lib/data";
 
 export const metadata: Metadata = {
   title: {
@@ -49,6 +50,16 @@ export default async function RootLayout({
 }) {
   let session = await auth();
 
+  const pages = await fetchCategories();
+
+  pages.unshift({
+    id: "",
+    name: "All categories",
+    slug: "",
+    emoji: "🛒",
+    color: "rbg( 16 16 16)",
+  });
+
   return (
     <html lang="en">
       <body
@@ -88,6 +99,21 @@ export default async function RootLayout({
                   <ShareButton />
                 </li>
               </ul>
+            </div>
+            <hr className="my-6 border-gray-200 dark:border-gray-700 lg:my-8" />
+            <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3 mx-4">
+              <div>
+                <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">
+                  Store Pages
+                </h2>
+                <ul className="text-gray-500 dark:text-gray-400 font-medium">
+                  {pages.map((p) => (
+                    <li className="mb-4" key={p.id}>
+                      <Link href={`/store/${p.slug}`}>{p.name}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
             <hr className="my-6 border-gray-200 dark:border-gray-700 lg:my-8" />
             <span className="block text-sm text-gray-500 dark:text-gray-400 text-center">
