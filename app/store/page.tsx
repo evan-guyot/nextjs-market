@@ -4,6 +4,7 @@ import Pagination from "@/app/ui/store/pagination";
 import Search from "@/app/ui/store/search";
 import Table from "@/app/ui/store/table";
 import { Suspense } from "react";
+import { auth } from "@/auth";
 
 export default async function StorePage({
   searchParams,
@@ -13,6 +14,8 @@ export default async function StorePage({
     page?: string;
   };
 }) {
+  let session = await auth();
+
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
 
@@ -27,7 +30,7 @@ export default async function StorePage({
         <Search placeholder="Search a product..." />
       </div>
       <Suspense key={query + currentPage} fallback={<ProductsTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} />
+        <Table query={query} currentPage={currentPage} user={session?.user} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />

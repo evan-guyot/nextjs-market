@@ -29,6 +29,12 @@ function SignIn() {
 function SignOut() {
   return (
     <UserMenuButton>
+      <Link
+        href="/cart"
+        className="w-full block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-left"
+      >
+        Cart
+      </Link>
       <form
         action={async () => {
           "use server";

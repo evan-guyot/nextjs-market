@@ -1,17 +1,41 @@
-import { fetchFilteredProducts } from "@/app/lib/data";
+import { addProductToCart, fetchFilteredProducts } from "@/app/lib/data";
 import { CategoriesTable } from "@/app/lib/definitions";
 import Image from "next/image";
 import { Button } from "../button";
+import { User } from "next-auth";
+
+function ButtonAddToCart({
+  productId,
+  user,
+}: {
+  productId: string;
+  user: User;
+}) {
+  return (
+    <form
+      action={async () => {
+        "use server";
+        await addProductToCart(user.email!, productId);
+      }}
+    >
+      <Button className="mx-auto">Add to Cart</Button>
+    </form>
+  );
+}
 
 export default async function ProductsTable({
   query,
   currentPage,
   category,
+  user,
 }: {
   category?: CategoriesTable;
   query: string;
   currentPage: number;
+  user: User | undefined;
 }) {
+  console.log("user from table", user);
+
   const products = await fetchFilteredProducts(
     query,
     currentPage,
@@ -48,7 +72,9 @@ export default async function ProductsTable({
                     <p className="mt-3 mb-4 font-light text-gray-500 dark:text-gray-400">
                       {product.description}
                     </p>
-                    <Button className="mx-auto">Add to cart</Button>
+                    {user && (
+                      <ButtonAddToCart productId={product.id} user={user} />
+                    )}
                   </div>
                 </div>
               ))}

@@ -5,6 +5,7 @@ import Search from "@/app/ui/store/search";
 import Table from "@/app/ui/store/table";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { auth } from "@/auth";
 
 export default async function StoreSlugPage({
   params,
@@ -16,6 +17,8 @@ export default async function StoreSlugPage({
     page?: string;
   };
 }) {
+  let session = await auth();
+
   const category = await getCategoryBySlug(params.slug);
 
   const query = searchParams?.query || "";
@@ -32,7 +35,12 @@ export default async function StoreSlugPage({
         <Search placeholder="Search a product..." />
       </div>
       <Suspense key={query + currentPage} fallback={<ProductsTableSkeleton />}>
-        <Table category={category} query={query} currentPage={currentPage} />
+        <Table
+          category={category}
+          query={query}
+          currentPage={currentPage}
+          user={session?.user}
+        />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />

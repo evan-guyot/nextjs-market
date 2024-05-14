@@ -1,4 +1,9 @@
-import { CategoriesTable, ProductsTable } from "@/app/lib/definitions";
+import {
+  CartItem,
+  CartsTable,
+  CategoriesTable,
+  ProductsTable,
+} from "@/app/lib/definitions";
 import { sql } from "@vercel/postgres";
 import { unstable_noStore as noStore } from "next/cache";
 
@@ -60,6 +65,7 @@ export async function fetchFilteredProducts(
         products.category_id,
         products.name,
         products.price,
+        products.delivery_cost,
         products.image_url,
         products.description
         FROM products
@@ -97,5 +103,88 @@ export async function fetchProductsPages(
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch total number of products.");
+  }
+}
+
+export async function addProductToCart(userEmail: string, productId: string) {
+  noStore();
+
+  try {
+    const cartResult = await sql<CartsTable>`
+    SELECT
+      carts.id
+    FROM carts
+      JOIN users ON users.id = carts.user_id
+    WHERE users.email LIKE ${userEmail}
+    AND carts.purchase_date IS NULL
+  `;
+
+    if (!cartResult.rows[0]) {
+      throw new Error(`Cart with email : ${userEmail}, does not exist.`);
+    }
+
+    const cartId = cartResult.rows[0].id;
+
+    const count = await sql`SELECT COUNT(cart_items.id)
+      FROM carts
+      JOIN cart_items ON cart_items.cart_id = carts.id
+      WHERE cart_items.product_id = ${productId}
+      AND carts.purchase_date IS NULL
+    `;
+
+    if (!(Number(count.rows[0].count) > 0)) {
+      // if not in the current cart already
+      await sql`INSERT INTO cart_items (cart_id, product_id)
+        VALUES (${cartId}, ${productId})
+      `;
+    }
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to add a product to the cart.");
+  }
+}
+
+export async function fetchCartProducts(userEmail: string) {
+  noStore();
+
+  try {
+    const result = await sql`
+      SELECT
+        cart_items.id,
+        cart_items.quantity,
+        products.id,
+        products.category_id,
+        products.name,
+        products.price,
+        products.delivery_cost,
+        products.image_url,
+        products.description
+        FROM carts
+          JOIN cart_items ON carts.id = cart_items.cart_id 
+          JOIN users ON users.id = carts.user_id
+          JOIN products ON products.id = cart_items.product_id
+        WHERE 
+          users.email LIKE ${userEmail}
+          AND carts.purchase_date IS NULL
+      `;
+
+    const cartItems: CartItem[] = result.rows.map((row) => ({
+      id: row.id,
+      product: {
+        id: row.product_id,
+        category_id: row.category_id,
+        name: row.name,
+        price: row.price,
+        delivery_cost: row.delivery_cost,
+        image_url: row.image_url,
+        description: row.description,
+      },
+      quantity: row.quantity,
+    }));
+
+    return cartItems;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch products.");
   }
 }
