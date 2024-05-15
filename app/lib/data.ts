@@ -129,6 +129,7 @@ export async function addProductToCart(userEmail: string, productId: string) {
       FROM carts
       JOIN cart_items ON cart_items.cart_id = carts.id
       WHERE cart_items.product_id = ${productId}
+      AND cart_items.cart_id = ${cartId}
       AND carts.purchase_date IS NULL
     `;
 
