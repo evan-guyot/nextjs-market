@@ -22,7 +22,6 @@ async function RemoveButton({
       action={async () => {
         "use server";
         await removeProductFromCart(email, productId);
-        console.log("getting executed");
         revalidatePath("/cart");
       }}
     >
