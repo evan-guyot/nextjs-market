@@ -1,19 +1,45 @@
 import { Metadata } from "next";
-import { fetchCartProducts } from "../lib/data";
+import { fetchCartProducts, removeProductFromCart } from "@/app/lib/data";
 import { MinusIcon, PlusIcon, TrashIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 import { auth } from "@/auth";
+import { notFound } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export const metadata: Metadata = {
   title: "Cart",
 };
 
+async function RemoveButton({
+  email,
+  productId,
+}: {
+  email: string;
+  productId: string;
+}) {
+  return (
+    <form
+      action={async () => {
+        "use server";
+        await removeProductFromCart(email, productId);
+        console.log("getting executed");
+        revalidatePath("/cart");
+      }}
+    >
+      <button className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500">
+        <TrashIcon height={16} width={16} className="mx-1" />
+        Remove
+      </button>
+    </form>
+  );
+}
+
 export default async function CartPage() {
   let session = await auth();
 
-  const cartItems = session?.user?.email
-    ? await fetchCartProducts(session.user.email)
-    : undefined;
+  const userEmail = session?.user?.email || undefined;
+
+  const cartItems = userEmail ? await fetchCartProducts(userEmail) : undefined;
 
   const prices = cartItems
     ? {
@@ -31,7 +57,7 @@ export default async function CartPage() {
       }
     : undefined;
 
-  return (
+  return userEmail ? (
     <main className="flex items-center justify-center">
       <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
         <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
@@ -105,20 +131,12 @@ export default async function CartPage() {
                           <p className="text-base font-medium text-gray-700 dark:text-white">
                             {item.product.description}
                           </p>
-                          {/*  Uncomment when making the feature to remove a product from the cart
-                           <div className="flex items-center gap-4">
-                            <button
-                              type="button"
-                              className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500"
-                            >
-                              <TrashIcon
-                                height={16}
-                                width={16}
-                                className="mx-1"
-                              />
-                              Remove
-                            </button>
-                          </div> */}
+                          <div className="flex items-center gap-4">
+                            <RemoveButton
+                              email={userEmail}
+                              productId={item.product.id}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -168,5 +186,7 @@ export default async function CartPage() {
         </div>
       </section>
     </main>
+  ) : (
+    notFound()
   );
 }

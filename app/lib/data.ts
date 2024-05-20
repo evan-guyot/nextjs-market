@@ -52,7 +52,7 @@ const FAKE_UUID = "00000000-0000-0000-0000-000000000000";
 export async function fetchFilteredProducts(
   query: string,
   currentPage: number,
-  categoryId: string | undefined = FAKE_UUID,
+  categoryId: string | undefined = FAKE_UUID
 ) {
   noStore();
 
@@ -85,7 +85,7 @@ export async function fetchFilteredProducts(
 
 export async function fetchProductsPages(
   query: string,
-  categoryId: string | undefined = FAKE_UUID,
+  categoryId: string | undefined = FAKE_UUID
 ) {
   noStore();
 
@@ -152,7 +152,7 @@ export async function fetchCartProducts(userEmail: string) {
       SELECT
         cart_items.id,
         cart_items.quantity,
-        products.id,
+        products.id AS product_id,
         products.category_id,
         products.name,
         products.price,
@@ -186,5 +186,42 @@ export async function fetchCartProducts(userEmail: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch products.");
+  }
+}
+
+export async function removeProductFromCart(
+  userEmail: string,
+  productId: string
+) {
+  noStore();
+
+  try {
+    const cartResult = await sql<CartsTable>`
+      SELECT
+        carts.id
+        FROM carts
+          JOIN users ON users.id = carts.user_id
+        WHERE 
+          users.email LIKE ${userEmail}
+          AND carts.purchase_date IS NULL
+    `;
+
+    if (!cartResult.rows[0]) {
+      throw new Error(`Cart with email : ${userEmail}, does not exist.`);
+    }
+
+    const cartId = cartResult.rows[0].id;
+
+    await sql`DELETE 
+      FROM cart_items
+        USING carts 
+      WHERE carts.id = cart_items.cart_id
+        AND cart_items.cart_id = ${cartId}
+        AND cart_items.product_id = ${productId}
+        AND carts.purchase_date IS NULL 
+    `;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to remove a product from the cart.");
   }
 }
