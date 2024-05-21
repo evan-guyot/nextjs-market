@@ -2,10 +2,11 @@
 
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
+import { updateCartQuantity } from "@/app/lib/data";
 
 export async function authenticate(
   prevState: string | undefined,
-  formData: FormData
+  formData: FormData,
 ) {
   try {
     await signIn("credentials", formData);
@@ -17,6 +18,20 @@ export async function authenticate(
         default:
           return "Something went wrong.";
       }
+    }
+    throw error;
+  }
+}
+
+export async function updateCartQuantityForm(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await updateCartQuantity(formData, "cart");
+  } catch (error) {
+    if (error) {
+      return "Invalid content.";
     }
     throw error;
   }

@@ -5,7 +5,7 @@ import {
   ProductsTable,
 } from "@/app/lib/definitions";
 import { sql } from "@vercel/postgres";
-import { unstable_noStore as noStore } from "next/cache";
+import { unstable_noStore as noStore, revalidatePath } from "next/cache";
 
 export async function fetchCategories() {
   try {
@@ -153,7 +153,7 @@ export async function fetchCartProducts(userEmail: string) {
       SELECT
         cart_items.id,
         cart_items.quantity,
-        products.id,
+        products.id AS product_id,
         products.category_id,
         products.name,
         products.price,
@@ -187,5 +187,34 @@ export async function fetchCartProducts(userEmail: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch products.");
+  }
+}
+
+export async function updateCartQuantity(formData: FormData) {
+  noStore();
+
+  const rawFormData = {
+    quantity: Number(formData.get("quantity")),
+    itemId: formData.get("itemId") as string,
+  };
+
+  if (rawFormData.quantity == null || rawFormData.itemId == null) {
+    throw new Error("Form Data should not be null");
+  }
+
+  try {
+    await sql`
+      UPDATE cart_items
+        SET  quantity = ${rawFormData.quantity}
+        FROM carts
+        WHERE carts.id = cart_items.cart_id
+          AND cart_items.id = ${rawFormData.itemId}
+          AND carts.purchase_date IS NULL
+    `;
+
+    revalidatePath("/cart");
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to update cart_items quantity.");
   }
 }
