@@ -218,3 +218,40 @@ export async function updateCartQuantity(formData: FormData) {
     throw new Error("Failed to update cart_items quantity.");
   }
 }
+
+export async function removeProductFromCart(
+  userEmail: string,
+  productId: string,
+) {
+  noStore();
+
+  try {
+    const cartResult = await sql<CartsTable>`
+      SELECT
+        carts.id
+        FROM carts
+          JOIN users ON users.id = carts.user_id
+        WHERE 
+          users.email LIKE ${userEmail}
+          AND carts.purchase_date IS NULL
+    `;
+
+    if (!cartResult.rows[0]) {
+      throw new Error(`Cart with email : ${userEmail}, does not exist.`);
+    }
+
+    const cartId = cartResult.rows[0].id;
+
+    await sql`DELETE 
+      FROM cart_items
+        USING carts 
+      WHERE carts.id = cart_items.cart_id
+        AND cart_items.cart_id = ${cartId}
+        AND cart_items.product_id = ${productId}
+        AND carts.purchase_date IS NULL 
+    `;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to remove a product from the cart.");
+  }
+}

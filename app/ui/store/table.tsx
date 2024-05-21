@@ -34,12 +34,10 @@ export default async function ProductsTable({
   currentPage: number;
   user: User | undefined;
 }) {
-  console.log("user from table", user);
-
   const products = await fetchFilteredProducts(
     query,
     currentPage,
-    category?.id,
+    category?.id
   );
 
   return (
