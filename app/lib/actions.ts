@@ -28,7 +28,7 @@ export async function updateCartQuantityForm(
   formData: FormData,
 ) {
   try {
-    await updateCartQuantity(formData, "cart");
+    await updateCartQuantity(formData);
   } catch (error) {
     if (error) {
       return "Invalid content.";
