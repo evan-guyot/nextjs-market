@@ -40,14 +40,15 @@ export default async function CartPage() {
   const prices = cartItems
     ? {
         productPrices: cartItems.reduce((accumulator, item) => {
-          return accumulator + item.product.price;
+          return accumulator + item.product.price * item.quantity;
         }, 0),
         deliveryCost: cartItems.reduce((accumulator, item) => {
-          return accumulator + item.product.delivery_cost;
+          return accumulator + item.product.delivery_cost * item.quantity;
         }, 0),
         totalPrice: cartItems.reduce((accumulator, item) => {
           return (
-            accumulator + (item.product.price + item.product.delivery_cost)
+            accumulator +
+            (item.product.price + item.product.delivery_cost) * item.quantity
           );
         }, 0),
       }
