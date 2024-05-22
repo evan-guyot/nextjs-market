@@ -30,7 +30,12 @@ export default async function StorePage({
         <Search placeholder="Search a product..." />
       </div>
       <Suspense key={query + currentPage} fallback={<ProductsTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} user={session?.user} />
+        <Table
+          query={query}
+          currentPage={currentPage}
+          user={session?.user}
+          path="/store"
+        />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />

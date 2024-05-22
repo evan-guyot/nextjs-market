@@ -40,6 +40,7 @@ export default async function StoreSlugPage({
           query={query}
           currentPage={currentPage}
           user={session?.user}
+          path={`/store/${params.slug}`}
         />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">

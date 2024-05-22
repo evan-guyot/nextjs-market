@@ -7,13 +7,21 @@ import { CategoriesTable } from "@/app/lib/definitions";
 import Image from "next/image";
 import { Button } from "../button";
 import { User } from "next-auth";
+import { revalidatePath } from "next/cache";
 
-function ButtonAddToCart({ productId }: { productId: string }) {
+function ButtonAddToCart({
+  productId,
+  path,
+}: {
+  productId: string;
+  path: string;
+}) {
   return (
     <form
       action={async () => {
         "use server";
         await addProductToCart(productId);
+        revalidatePath(path);
       }}
     >
       <Button className="mx-auto">Add to Cart</Button>
@@ -26,11 +34,13 @@ export default async function ProductsTable({
   currentPage,
   category,
   user,
+  path,
 }: {
   category?: CategoriesTable;
   query: string;
   currentPage: number;
   user: User | undefined;
+  path: string;
 }) {
   const products = await fetchFilteredProducts(
     query,
@@ -78,7 +88,7 @@ export default async function ProductsTable({
                           Already in your cart
                         </Button>
                       ) : (
-                        <ButtonAddToCart productId={product.id} />
+                        <ButtonAddToCart productId={product.id} path={path} />
                       ))}
                   </div>
                 </div>
