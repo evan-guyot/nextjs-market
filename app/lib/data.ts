@@ -263,11 +263,5 @@ export async function removeProductFromCart(productId: string) {
 async function getSessionEmail() {
   let session = await auth();
 
-  const userEmail = session?.user?.email || undefined;
-
-  if (!userEmail) {
-    throw new Error("User must be connected");
-  }
-
-  return userEmail;
+  return session?.user?.email || undefined;
 }
