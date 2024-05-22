@@ -6,6 +6,7 @@ import {
 } from "@/app/lib/definitions";
 import { sql } from "@vercel/postgres";
 import { unstable_noStore as noStore, revalidatePath } from "next/cache";
+import { auth } from "@/auth";
 
 export async function fetchCategories() {
   try {
@@ -106,8 +107,10 @@ export async function fetchProductsPages(
   }
 }
 
-export async function addProductToCart(userEmail: string, productId: string) {
+export async function addProductToCart(productId: string) {
   noStore();
+
+  const userEmail = await getSessionEmail();
 
   try {
     const cartResult = await sql<CartsTable>`
@@ -145,8 +148,10 @@ export async function addProductToCart(userEmail: string, productId: string) {
   }
 }
 
-export async function fetchCartProducts(userEmail: string) {
+export async function fetchCartProducts() {
   noStore();
+
+  const userEmail = await getSessionEmail();
 
   try {
     const result = await sql`
@@ -219,11 +224,10 @@ export async function updateCartQuantity(formData: FormData) {
   }
 }
 
-export async function removeProductFromCart(
-  userEmail: string,
-  productId: string,
-) {
+export async function removeProductFromCart(productId: string) {
   noStore();
+
+  const userEmail = await getSessionEmail();
 
   try {
     const cartResult = await sql<CartsTable>`
@@ -254,4 +258,16 @@ export async function removeProductFromCart(
     console.error("Database Error:", error);
     throw new Error("Failed to remove a product from the cart.");
   }
+}
+
+async function getSessionEmail() {
+  let session = await auth();
+
+  const userEmail = session?.user?.email || undefined;
+
+  if (!userEmail) {
+    throw new Error("User must be connected");
+  }
+
+  return userEmail;
 }

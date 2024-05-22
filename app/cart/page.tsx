@@ -11,18 +11,12 @@ export const metadata: Metadata = {
   title: "Cart",
 };
 
-async function RemoveButton({
-  email,
-  productId,
-}: {
-  email: string;
-  productId: string;
-}) {
+async function RemoveButton({ productId }: { productId: string }) {
   return (
     <form
       action={async () => {
         "use server";
-        await removeProductFromCart(email, productId);
+        await removeProductFromCart(productId);
         revalidatePath("/cart");
       }}
     >
@@ -37,9 +31,11 @@ async function RemoveButton({
 export default async function CartPage() {
   let session = await auth();
 
-  const userEmail = session?.user?.email || undefined;
+  if (!session) {
+    notFound();
+  }
 
-  const cartItems = userEmail ? await fetchCartProducts(userEmail) : undefined;
+  const cartItems = await fetchCartProducts();
 
   const prices = cartItems
     ? {
@@ -57,7 +53,7 @@ export default async function CartPage() {
       }
     : undefined;
 
-  return userEmail ? (
+  return (
     <main className="flex items-center justify-center">
       <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
         <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
@@ -92,10 +88,7 @@ export default async function CartPage() {
                             {item.product.description}
                           </p>
                           <div className="flex items-center gap-4">
-                            <RemoveButton
-                              email={userEmail}
-                              productId={item.product.id}
-                            />
+                            <RemoveButton productId={item.product.id} />
                           </div>
                         </div>
                       </div>
@@ -146,7 +139,5 @@ export default async function CartPage() {
         </div>
       </section>
     </main>
-  ) : (
-    notFound()
   );
 }

@@ -4,18 +4,12 @@ import Image from "next/image";
 import { Button } from "../button";
 import { User } from "next-auth";
 
-function ButtonAddToCart({
-  productId,
-  user,
-}: {
-  productId: string;
-  user: User;
-}) {
+function ButtonAddToCart({ productId }: { productId: string }) {
   return (
     <form
       action={async () => {
         "use server";
-        await addProductToCart(user.email!, productId);
+        await addProductToCart(productId);
       }}
     >
       <Button className="mx-auto">Add to Cart</Button>
@@ -37,7 +31,7 @@ export default async function ProductsTable({
   const products = await fetchFilteredProducts(
     query,
     currentPage,
-    category?.id
+    category?.id,
   );
 
   return (
@@ -70,9 +64,7 @@ export default async function ProductsTable({
                     <p className="mt-3 mb-4 font-light text-gray-500 dark:text-gray-400">
                       {product.description}
                     </p>
-                    {user && (
-                      <ButtonAddToCart productId={product.id} user={user} />
-                    )}
+                    {user && <ButtonAddToCart productId={product.id} />}
                   </div>
                 </div>
               ))}
