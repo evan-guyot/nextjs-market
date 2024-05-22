@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next.js Market
 
-## Getting Started
+Nextjs Market is a comprehensive e-commerce application built with Next.js 14, featuring both client-side and server-side functionalities. The app connects to a PostgreSQL database and includes user authentication, a product catalog, and a shopping cart with full CRUD capabilities.
 
-First, run the development server:
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Database Setup](#database-setup)
+- [Running the Application](#running-the-application)
+- [Routes](#routes)
+- [Technologies Used](#technologies-used)
+- [License](#license)
+
+## Features
+
+- User authentication
+- Product browsing and searching
+- Shopping cart with add/remove items and view total price
+- Admin dashboard
+- Categories for products
+- File-based routing
+
+## Installation
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/evan-guyot/nextjs-market.git
+    cd nextjs-market
+    ```
+
+2. Install dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3. Set up environment variables by creating a `.env.local` file in the root directory:
+
+    ```plaintext
+    POSTGRES_URL=••••••
+    POSTGRES_URL=••••••
+    POSTGRES_PRISMA_URL=••••••
+    POSTGRES_URL_NO_SSL=••••••
+    POSTGRES_URL_NON_POOLING=••••••
+    POSTGRES_USER=••••••
+    POSTGRES_HOST=••••••
+    POSTGRES_PASSWORD=••••••
+    POSTGRES_DATABASE=••••••
+
+    AUTH_SECRET=••••••
+    SESSION_SECRET=••••••
+    ```
+
+## Database Setup
+
+The application uses PostgreSQL as its database. You can set up the database by running the seed script included in the project.
+
+1. Ensure you have PostgreSQL installed and running.
+2. Run the following command to seed the database:
+
+    ```bash
+    npm run seed
+    ```
+
+This script will create and populate the following tables:
+
+- `roles`
+- `users`
+- `categories`
+- `products`
+- `carts`
+- `cart_items`
+
+## Running the Application
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open your browser and navigate to http://localhost:3000 to view the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+The application includes the following routes:
 
-## Learn More
+- `/cart` - View and manage your shopping cart
+- `/dashboard` - Admin dashboard for managing the store
+- `/login` - User login page
+- `/profile` - User profile page
+- `/store` - Main store page with product listings and search functionality
+- `/store/[category_slug]` - Product listings filtered by category
 
-To learn more about Next.js, take a look at the following resources:
+In the store, you can search for products and paginate through the results.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Technologies Used
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- **Next.js 14** - React framework for server-side rendering and static site generation
+- **PostgreSQL** - Relational database
+- **Vercel** - Hosting platform
+- **bcrypt** - Password hashing
+- **uuid-ossp** - PostgreSQL extension for generating UUIDs
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
