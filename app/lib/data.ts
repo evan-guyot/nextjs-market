@@ -53,7 +53,7 @@ const FAKE_UUID = "00000000-0000-0000-0000-000000000000";
 export async function fetchFilteredProducts(
   query: string,
   currentPage: number,
-  categoryId: string | undefined = FAKE_UUID,
+  categoryId: string | undefined = FAKE_UUID
 ) {
   noStore();
 
@@ -86,7 +86,7 @@ export async function fetchFilteredProducts(
 
 export async function fetchProductsPages(
   query: string,
-  categoryId: string | undefined = FAKE_UUID,
+  categoryId: string | undefined = FAKE_UUID
 ) {
   noStore();
 
@@ -172,6 +172,7 @@ export async function fetchCartProducts() {
         WHERE 
           users.email LIKE ${userEmail}
           AND carts.purchase_date IS NULL
+        ORDER BY products.name
       `;
 
     const cartItems: CartItem[] = result.rows.map((row) => ({
