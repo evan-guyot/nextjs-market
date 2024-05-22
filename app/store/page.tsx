@@ -1,4 +1,4 @@
-import { fetchProductsPages, getCategoryBySlug } from "@/app/lib/data";
+import { fetchProductsPages, fetchCartProducts } from "@/app/lib/data";
 import { ProductsTableSkeleton } from "@/app/ui/skeletons";
 import Pagination from "@/app/ui/store/pagination";
 import Search from "@/app/ui/store/search";

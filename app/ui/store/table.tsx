@@ -1,4 +1,8 @@
-import { addProductToCart, fetchFilteredProducts } from "@/app/lib/data";
+import {
+  addProductToCart,
+  fetchFilteredProducts,
+  fetchCartProducts,
+} from "@/app/lib/data";
 import { CategoriesTable } from "@/app/lib/definitions";
 import Image from "next/image";
 import { Button } from "../button";
@@ -34,6 +38,8 @@ export default async function ProductsTable({
     category?.id,
   );
 
+  const userCartProducts = await fetchCartProducts();
+
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -64,7 +70,16 @@ export default async function ProductsTable({
                     <p className="mt-3 mb-4 font-light text-gray-500 dark:text-gray-400">
                       {product.description}
                     </p>
-                    {user && <ButtonAddToCart productId={product.id} />}
+                    {user &&
+                      (userCartProducts.some(
+                        (item) => item.product.id === product.id,
+                      ) ? (
+                        <Button className="mx-auto" aria-disabled="true">
+                          Already in your cart
+                        </Button>
+                      ) : (
+                        <ButtonAddToCart productId={product.id} />
+                      ))}
                   </div>
                 </div>
               ))}
