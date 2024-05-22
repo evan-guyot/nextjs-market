@@ -26,7 +26,11 @@ export default async function StoreSlugPage({
 
   const totalPages = category && (await fetchProductsPages(query, category.id));
 
-  return category ? (
+  if (!category) {
+    notFound();
+  }
+
+  return (
     <main className="flex flex-col items-center justify-center">
       <h1 className="text-xl text-gray-800 dark:text-gray-200 md:text-3xl font-bold mx-auto">
         {category.name} {category.emoji}
@@ -47,7 +51,5 @@ export default async function StoreSlugPage({
         <Pagination totalPages={totalPages} />
       </div>
     </main>
-  ) : (
-    notFound()
   );
 }
