@@ -1,15 +1,39 @@
+const roles = [
+  {
+    id: "1213970d-234c-41a2-b838-35296b745e1e",
+    name: "Customer",
+  },
+  {
+    id: "97e015f9-7179-4ee1-8c03-0c9b34c6e9f4",
+    name: "Employee",
+  },
+  {
+    id: "192f019d-bf5d-487c-a780-ac3f4da934d9",
+    name: "Administrator",
+  },
+];
+
 const users = [
   {
     id: "410544b2-4001-4271-9855-fec4b6a6442a",
     name: "Marty",
     email: "marty@nextjsmarket.com",
     password: "123456",
+    role_id: "97e015f9-7179-4ee1-8c03-0c9b34c6e9f4", // Employee
   },
   {
     id: "406db7ab-b53f-4d58-8e9f-026a4e68ffa3",
     name: "Evan",
     email: "evan@nextjsmarket.com",
     password: "654321",
+    role_id: "192f019d-bf5d-487c-a780-ac3f4da934d9", // Administrator
+  },
+  {
+    id: "7610aa51-edd1-4199-b3ff-4a314a6c71d5",
+    name: "Coraline",
+    email: "coraline@nextjsmarket.com",
+    password: "456789",
+    role_id: "1213970d-234c-41a2-b838-35296b745e1e", // Customer
   },
 ];
 
@@ -209,6 +233,7 @@ const products = [
 ];
 
 module.exports = {
+  roles,
   users,
   categories,
   products,

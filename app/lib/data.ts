@@ -260,6 +260,26 @@ export async function removeProductFromCart(productId: string) {
   }
 }
 
+export async function checkIfUserIsEmployeeOrAdmin() {
+  noStore();
+
+  const userEmail = await getSessionEmail();
+
+  try {
+    const count = await sql`SELECT COUNT(*)
+      FROM users
+      JOIN roles ON roles.id = users.role_id
+      WHERE users.email LIKE ${userEmail}
+      AND (roles.name LIKE 'Employee' OR roles.name LIKE 'Administrator')
+    `;
+
+    return Number(count.rows[0].count) > 0;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to check if user is allowed.");
+  }
+}
+
 async function getSessionEmail() {
   let session = await auth();
 

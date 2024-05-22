@@ -1,10 +1,44 @@
 const { db } = require("@vercel/postgres");
 const {
+  roles,
   users,
   categories,
   products,
 } = require("../app/lib/placeholder-data.js");
 const bcrypt = require("bcrypt");
+
+async function seedRoles(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS roles (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        name VARCHAR(255) NOT NULL
+      );
+    `;
+    console.log("Created 'roles' table");
+
+    const insertedRoles = await Promise.all(
+      roles.map(async (role) => {
+        return client.sql`
+        INSERT INTO roles (id, name)
+        VALUES (${role.id}, ${role.name})
+        ON CONFLICT (id) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedRoles.length} roles`);
+
+    return {
+      createTable,
+      roles: insertedRoles,
+    };
+  } catch (error) {
+    console.error("Error creating 'roles' table:", error);
+    throw error;
+  }
+}
 
 async function seedUsers(client) {
   try {
@@ -14,7 +48,8 @@ async function seedUsers(client) {
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        role_id UUID NOT NULL REFERENCES roles(id)
       );
     `;
 
@@ -24,8 +59,8 @@ async function seedUsers(client) {
       users.map(async (user) => {
         const hashedPassword = await bcrypt.hash(user.password, 10);
         return client.sql`
-        INSERT INTO users (id, name, email, password)
-        VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
+        INSERT INTO users (id, name, email, password, role_id)
+        VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword}, ${user.role_id})
         ON CONFLICT (id) DO NOTHING;
       `;
       }),
@@ -124,7 +159,7 @@ async function seedCarts(client) {
     await client.sql`
       CREATE TABLE IF NOT EXISTS carts (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        user_id UUID NOT NULL REFERENCES users(id) UNIQUE,
+        user_id UUID NOT NULL REFERENCES users(id),
         purchase_date TIMESTAMP,
         delivery_date TIMESTAMP,
         delivery_cost DECIMAL(10,2),
@@ -171,6 +206,7 @@ async function seedCartItems(client) {
 async function main() {
   const client = await db.connect();
 
+  await seedRoles(client);
   await seedUsers(client);
   await seedCategories(client);
   await seedProducts(client);
