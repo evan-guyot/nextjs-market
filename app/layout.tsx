@@ -69,11 +69,11 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} antialiased min-h-screen bg-white dark:bg-black`}
+        className={`${inter.className} antialiased min-h-screen max-w-screen-xl bg-white dark:bg-black mx-auto`}
       >
-        <header className="p-4">
-          <nav className="bg-white rounded-lg shadow dark:bg-gray-900 w-full max-w-screen-xl mx-auto p-4 py-8">
-            <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+        <header className="m-4">
+          <nav className="bg-white rounded-lg shadow dark:bg-gray-900 w-full mx-auto p-4 py-8">
+            <div className="flex flex-wrap justify-between items-center mx-auto">
               <Link
                 href="/"
                 className="flex items-center gap-5 self-start  px-4 py-2 text-2xl font-semibold"
@@ -90,7 +90,7 @@ export default async function RootLayout({
         </header>
         {children}
         <footer className="bottom-0 w-full p-4">
-          <div className="bg-white rounded-lg shadow dark:bg-gray-900 w-full max-w-screen-xl mx-auto p-4 py-8">
+          <div className="bg-white rounded-lg shadow dark:bg-gray-900 w-full mx-auto p-4 py-8">
             <div className="flex items-center justify-between">
               <Link
                 href="/"
