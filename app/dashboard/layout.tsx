@@ -69,7 +69,7 @@ export default async function RootLayout({
           </ul>
         </div>
       </aside>
-      <section className="flex flex-col items-center justify-center !w-max m-4">
+      <section className="flex flex-col items-center justify-center w-full m-4">
         {children}
       </section>
     </main>

@@ -51,6 +51,7 @@ export function BarChart({
   };
   const options = {
     indexAxis: "y",
+    responsive: true,
     scales: {
       y: {
         title: {
@@ -75,12 +76,7 @@ export function BarChart({
       },
     },
   };
-  return (
-    <Bar
-      data={data}
-      options={options}
-      className="w-full"
-      width={"fit-content"}
-    />
-  );
+
+  // @ts-ignore: indexAxis is valid according to Chart.js documentation :https://www.chartjs.org/docs/latest/samples/bar/horizontal.html
+  return <Bar data={data} options={options} className="w-full" />;
 }
