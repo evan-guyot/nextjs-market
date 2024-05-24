@@ -1,5 +1,9 @@
+import { checkIfUserIsEmployeeOrAdmin } from "@/app/lib/data";
+import { auth } from "@/auth";
+import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
+
 export const metadata: Metadata = {
   title: "Dashboard",
 };
@@ -32,6 +36,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const isUserAllowed = await checkIfUserIsEmployeeOrAdmin();
+
+  let session = await auth();
+
+  if (!session || !isUserAllowed) {
+    notFound();
+  }
+
   return (
     <main className="flex gap-16">
       <aside

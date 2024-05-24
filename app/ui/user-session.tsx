@@ -34,7 +34,7 @@ export function UserMenuButton({
 
       <div
         id="dropdown"
-        className={`z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 mt-1 ${
+        className={`z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 mt-1 -ml-4 ${
           isOpen ? "absolute" : "hidden"
         }`}
       >
