@@ -53,7 +53,7 @@ const FAKE_UUID = "00000000-0000-0000-0000-000000000000";
 export async function fetchFilteredProducts(
   query: string,
   currentPage: number,
-  categoryId: string | undefined = FAKE_UUID
+  categoryId: string | undefined = FAKE_UUID,
 ) {
   noStore();
 
@@ -86,7 +86,7 @@ export async function fetchFilteredProducts(
 
 export async function fetchProductsPages(
   query: string,
-  categoryId: string | undefined = FAKE_UUID
+  categoryId: string | undefined = FAKE_UUID,
 ) {
   noStore();
 
@@ -285,4 +285,27 @@ async function getSessionEmail() {
   let session = await auth();
 
   return session?.user?.email || undefined;
+}
+
+export async function getProductCountsByCategory() {
+  try {
+    const result = await sql`
+      SELECT 
+        COUNT(categories.*) AS number,
+        categories.name
+      FROM categories
+      JOIN products ON products.category_id = categories.id
+      GROUP BY categories.id;
+    `;
+
+    const productsbyCategory = result.rows.map((row) => ({
+      name: row.name,
+      number: Number(row.number),
+    }));
+
+    return productsbyCategory;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch product number by category.");
+  }
 }

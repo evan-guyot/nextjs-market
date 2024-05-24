@@ -45,7 +45,7 @@ export default async function RootLayout({
   }
 
   return (
-    <main className="flex gap-16">
+    <main className="flex gap-4 md:gap-8">
       <aside
         id="default-sidebar"
         className="self-start sticky top-0 col-span-1 bg-white rounded-lg shadow dark:bg-gray-900 m-4 z-40 transition-transform translate-x-0"
@@ -61,7 +61,7 @@ export default async function RootLayout({
                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group px-3"
                   >
                     {page.emoji}
-                    <span className="hidden sm:block">{page.name}</span>
+                    <span className="hidden md:block">{page.name}</span>
                   </Link>
                 </li>
               );
@@ -69,7 +69,7 @@ export default async function RootLayout({
           </ul>
         </div>
       </aside>
-      <section className="flex items-center justify-center w-full m-4">
+      <section className="flex flex-col items-center justify-center !w-max m-4">
         {children}
       </section>
     </main>
