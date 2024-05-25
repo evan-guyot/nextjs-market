@@ -12,7 +12,7 @@ const pages = [
   {
     name: "Dashboard",
     emoji: "📊",
-    slug: "dashboard",
+    slug: "",
   },
   {
     name: "Products",

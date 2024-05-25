@@ -47,17 +47,17 @@ export async function getCategoryBySlug(slug: string) {
   }
 }
 
-const ITEMS_PER_PAGE = 16;
+const STORE_ITEMS_PER_PAGE = 16;
 const FAKE_UUID = "00000000-0000-0000-0000-000000000000";
 
 export async function fetchFilteredProducts(
   query: string,
   currentPage: number,
-  categoryId: string | undefined = FAKE_UUID,
+  categoryId: string | undefined = FAKE_UUID
 ) {
   noStore();
 
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  const offset = (currentPage - 1) * STORE_ITEMS_PER_PAGE;
 
   try {
     const products = await sql<ProductsTable>`
@@ -74,7 +74,7 @@ export async function fetchFilteredProducts(
         WHERE 
             (products.name ILIKE ${`%${query}%`} OR products.description ILIKE ${`%${query}%`}) AND 
             (${FAKE_UUID} = ${categoryId} OR categories.id = ${categoryId})
-        LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+        LIMIT ${STORE_ITEMS_PER_PAGE} OFFSET ${offset}
       `;
 
     return products.rows;
@@ -84,9 +84,41 @@ export async function fetchFilteredProducts(
   }
 }
 
+const DASHBOARD_ITEMS_PER_PAGE = 8;
+
+export async function fetchFilteredDashboardProducts(
+  query: string,
+  currentPage: number
+) {
+  const offset = (currentPage - 1) * DASHBOARD_ITEMS_PER_PAGE;
+
+  try {
+    const products = await sql<any>`
+      SELECT
+        products.id,
+        products.name,
+        products.price,
+        products.delivery_cost,
+        products.image_url,
+        products.description,
+        categories.name AS category_name,
+        categories.color AS category_color
+        FROM products
+          JOIN categories ON products.category_id = categories.id 
+        WHERE products.name ILIKE ${`%${query}%`}            
+        LIMIT ${DASHBOARD_ITEMS_PER_PAGE} OFFSET ${offset}
+      `;
+
+    return products.rows;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch dashboard products.");
+  }
+}
+
 export async function fetchProductsPages(
   query: string,
-  categoryId: string | undefined = FAKE_UUID,
+  categoryId: string | undefined = FAKE_UUID
 ) {
   noStore();
 
@@ -99,11 +131,31 @@ export async function fetchProductsPages(
       (${FAKE_UUID} = ${categoryId} OR categories.id = ${categoryId})
   `;
 
-    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(
+      Number(count.rows[0].count) / STORE_ITEMS_PER_PAGE
+    );
     return totalPages;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch total number of products.");
+  }
+}
+
+export async function fetchDashboardProductsPages(query: string) {
+  try {
+    const count = await sql`SELECT COUNT(*)
+        FROM products
+        JOIN categories ON products.category_id = categories.id
+        WHERE products.name ILIKE ${`%${query}%`}
+      `;
+
+    const totalPages = Math.ceil(
+      Number(count.rows[0].count) / DASHBOARD_ITEMS_PER_PAGE
+    );
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total number of dashboard products.");
   }
 }
 
@@ -307,5 +359,15 @@ export async function getProductCountsByCategory() {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch product number by category.");
+  }
+}
+
+export async function deleteProduct(id: string) {
+  try {
+    await sql`DELETE FROM products WHERE id = ${id}`;
+    revalidatePath("/dashboard/products");
+    return { message: "Deleted Product." };
+  } catch (error) {
+    return { message: "Database Error: Failed to delete a product." };
   }
 }
