@@ -1,4 +1,13 @@
 module.exports = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+        pathname: "/f/**",
+      },
+    ],
+  },
   webpack: (config, { isServer }) => {
     // ... other configuration
 

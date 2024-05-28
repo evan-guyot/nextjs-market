@@ -45,7 +45,7 @@ export default async function ProductsTable({
   const products = await fetchFilteredProducts(
     query,
     currentPage,
-    category?.id,
+    category?.id
   );
 
   const userCartProducts = await fetchCartProducts();
@@ -66,8 +66,8 @@ export default async function ProductsTable({
                       className="w-full rounded"
                       src={product.image_url}
                       alt={`${product.name} image`}
-                      layout="fill"
-                      objectFit="cover"
+                      fill
+                      style={{ objectFit: "cover" }}
                     />
                   </div>
                   <div className="p-5">
@@ -82,7 +82,7 @@ export default async function ProductsTable({
                     </p>
                     {user &&
                       (userCartProducts.some(
-                        (item) => item.product.id === product.id,
+                        (item) => item.product.id === product.id
                       ) ? (
                         <Button className="mx-auto" aria-disabled="true">
                           Already in your cart

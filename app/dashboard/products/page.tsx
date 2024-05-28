@@ -23,12 +23,14 @@ export default async function DashboardPage({
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1>Products</h1>
+      <h1 className="text-xl text-gray-800 dark:text-gray-200 md:text-3xl font-bold mx-auto">
+        Products 📦
+      </h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search invoices..." />
+        <Search placeholder="Search products..." />
         <Link
-          href="/dashboard/invoices/create"
+          href="/dashboard/products/create"
           className="flex h-10 items-center rounded-lg bg-orange-600 px-4 text-sm font-medium text-white transition-colors hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600"
         >
           <span className="hidden md:block">Add Product</span>
